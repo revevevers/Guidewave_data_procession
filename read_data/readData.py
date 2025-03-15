@@ -36,55 +36,6 @@ def read_csv_data(filepath):
     displacement = data[:, 1:]
     return time, displacement
 
-def convert_hdf5_to_mat(hdf5_file_path, mat_file_path, n, m):
-    with h5py.File(hdf5_file_path, 'r') as f:
-        dataset = f['data_z']  # 假设数据存储在 'data' 数据集中
-        t = dataset.shape[0]  # 时间点数
-        data = np.empty((n, m, t), dtype=dataset.dtype)
-        
-        # 逐块读取数据
-        for i in range(t):
-            data[:, :, i] = dataset[i].reshape((n, m), order='F')
-    
-    savemat(mat_file_path, {'data': data})
-    print(f"Data successfully saved to {mat_file_path}")
-
-# 示例调用
-# convert_hdf5_to_mat('path/to/input.h5', 'path/to/output.mat', 10, 10)
-
-def convert_csv_to_mat(csv_file_path, mat_file_path, n, m):
-    # 读取 CSV 文件并打印前几行以进行调试
-    df = pd.read_csv(csv_file_path)
-    print("CSV 文件内容（前几行）：")
-    print(df.head())
-
-    time_steps = df.iloc[:, 0].values  # 第一列为时间步长
-    data = df.iloc[:, 1:].values  # 其余列为数据
-    t = data.shape[0]  # 时间点数
-
-    # 打印读取的数据形状以进行调试
-    print(f"读取的数据形状: {data.shape}")
-
-    if data.size != n * m * t:
-        raise ValueError(f"无法将大小为 {data.size} 的数组重塑为形状 ({n}, {m}, {t})")
-    data = data.reshape((n, m, t), order='F')  # 将数据重塑为三维矩阵，使用 Fortran 顺序
-    savemat(mat_file_path, {'data': data, 'time_steps': time_steps})
-    print(f"Data successfully saved to {mat_file_path}")
-
-# 示例调用
-# convert_csv_to_mat('path/to/input.csv', 'path/to/output.mat', 10, 10)
-
-def convert_mat_to_3d_mat(x_mat_file_path, y_mat_file_path, output_mat_file_path, n, m):
-    x_data = loadmat(x_mat_file_path)['x']  # 假设时间步长存储在 'x' 变量中
-    y_data = loadmat(y_mat_file_path)['y']  # 假设数据存储在 'y' 变量中
-    t = y_data.shape[1]  # 时间点数
-    data = y_data.T.reshape((n, m, t), order='F')  # 将数据重塑为三维矩阵，使用 Fortran 顺序
-    savemat(output_mat_file_path, {'data': data, 'time_steps': x_data})
-    print(f"Data successfully saved to {output_mat_file_path}")
-
-# 示例调用
-# convert_mat_to_3d_mat('path/to/x.mat', 'path/to/y.mat', 'path/to/output.mat', 10, 10)
-
 def plot_h5_wavefield(figpath, data, coord, time):
     # Determine mesh
     delta_x = 1e-3
@@ -127,6 +78,7 @@ def plot_csv_wavefield(figpath, time, displacement, grid_shape):
         filename = figpath + 'wavefield_frame' + str(idx) + '.png'
         plt.savefig(filename, dpi=200)
 
+# region 读取 h5 文件
 # path_data = 'E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集\OGW_CFRP_Stringer_Wavefield_Intact\OGW_CFRP_Stringer_Wavefield_Intact\BURST_300kHz_5HC_3Vpp_x10\data_z.h5'
 # path_coord = 'E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集\OGW_CFRP_Stringer_Wavefield_Intact\OGW_CFRP_Stringer_Wavefield_Intact\BURST_300kHz_5HC_3Vpp_x10\coordinates.h5'
 # path_time = r"E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集\OGW_CFRP_Stringer_Wavefield_Intact\OGW_CFRP_Stringer_Wavefield_Intact\BURST_300kHz_5HC_3Vpp_x10\time.h5"
@@ -143,14 +95,10 @@ def plot_csv_wavefield(figpath, time, displacement, grid_shape):
 # figpath = 'E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集\PY\frames\\'
 # plot_h5_wavefield(figpath, data, coord, time)
 
-# # region 读取 csv 文件
+# region 读取 csv 文件
 # csv_filepath = 'E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集\\100_kHz_23_123_2829_Points\data_1.csv'
 # figpath = 'E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集\\100_kHz_23_123_2829_Points\\wavefield_frames\\'
 # time, displacement = read_csv_data(csv_filepath)
 # plot_csv_wavefield(figpath, time, displacement, (23, 123))
 
 # print(len(time))
-
-# convert_csv_to_mat('E:/Downlode/sch/项目/热防护材料脱粘损伤成像/成像算法/开放数据集/100_kHz_23_123_2829_Points/data_2.csv', 'output.mat', 23,123)
-
-convert_hdf5_to_mat('E:/Downlode/sch/项目/热防护材料脱粘损伤成像/成像算法/开放数据集/OGW_CFRP_Stringer_Wavefield_Intact/OGW_CFRP_Stringer_Wavefield_Intact/BURST_200kHz_5HC_4_5Vpp_x10/data_z.h5', 'output_h5.mat', 483, 483)
