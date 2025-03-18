@@ -1,12 +1,12 @@
 clear all
 
 
-read_usd_to_mat_data('G:\ANW\Guidewave_data_procession\read_data\read_usd_data\x.mat', 'G:\ANW\Guidewave_data_procession\read_data\read_usd_data\y.mat', 'E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集', 41, 41);
+read_csv_data('E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集\100_kHz_23_123_2829_Points\data_2.csv', 'E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集', 23, 123);
 
 load("E:\Downlode\sch\项目\热防护材料脱粘损伤成像\成像算法\开放数据集\data.mat");
 
 %% 
-f = 200e3;
+f = 100e3;
 fs = 1e-6 / (data_time(2) - data_time(1)); % 单位MHz
 time = 120;
 data_xyt = wordfilter(1,1000,fs,data_xyt);

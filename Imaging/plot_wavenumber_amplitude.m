@@ -4,8 +4,8 @@ function plot_wavenumber_amplitude(data_time, data_xyt, f)
 
     % 参数设置
     fs = 1 / (data_time(2) - data_time(1)); % 采样频率
-    num_x = size(data_xyt, 2);
-    num_y = size(data_xyt, 1);
+    num_x = size(data_xyt, 1);
+    num_y = size(data_xyt, 2);
     num_time_samples = size(data_xyt, 3); % 时间样本数
 
     % 设定开始点和结束点为全部时间范围
@@ -20,8 +20,8 @@ function plot_wavenumber_amplitude(data_time, data_xyt, f)
     amplitude_matrix = zeros(num_x, num_y); % 幅值矩阵
 
     % 对每个空间点进行处理
-    for i = 1:num_x
-        for j = 1:num_y
+    for i = 1:num_y
+        for j = 1:num_x
             % 提取短时间波场
             short_wave_field = squeeze(data_xyt(j, i, start_point:end_point)) .* hanning_window;
 
@@ -38,30 +38,35 @@ function plot_wavenumber_amplitude(data_time, data_xyt, f)
             end
 
             % 计算局部波数幅值
-            amplitude_matrix(i, j) = wave_amplitude(freq_index); % 直接取对应频率的幅值
+            amplitude_matrix(j, i) = wave_amplitude(freq_index); % 直接取对应频率的幅值
         end
     end
 
-    % 显示幅值图像
-    data_x = 1:num_x;
-    data_y = 1:num_y;
+    % 生成坐标网格
+    [X, Y] = meshgrid(1:num_y, 1:num_x);
+    amplitude_matrix = rot90(amplitude_matrix,2);
+
     
+    % 显示幅值图像
     figure;
-    surf(data_x, data_y, amplitude_matrix); % 使用 surf 显示幅值
+    surf(X, Y, amplitude_matrix); % 使用 surf 显示幅值
     shading interp; % 插值平滑
     colorbar; % 显示颜色条
     view([0,90]);
-    xlabel('X (mm)');
-    ylabel('Y (mm)');
+    xlabel('X (点数)');
+    ylabel('Y (点数)');
     zlabel('幅值');
     title('波数域幅值分布');
+    set(gca, 'XTick', 0:10:max(num_y));
+    set(gca, 'YTick', 0:10:max(num_x));
+    axis equal; % 保证横纵坐标的单位长度相同
 
     % 对图像进行平滑处理
     smooth_image = imgaussfilt(amplitude_matrix, 1); % 使用高斯滤波进行平滑处理，sigma=1
 
     % 显示平滑后的图像
     figure;
-    surf(data_x, data_y, smooth_image); % 使用 surf 显示平滑后的幅值
+    surf(X, Y, smooth_image); % 使用 surf 显示平滑后的幅值
     shading interp; % 插值平滑
     colorbar; % 显示颜色条
     view([0,90]);
@@ -69,4 +74,7 @@ function plot_wavenumber_amplitude(data_time, data_xyt, f)
     ylabel('Y (mm)');
     zlabel('平滑后的幅值');
     title('平滑后的波数域幅值分布');
+    set(gca, 'XTick', 0:10:max(num_y));
+    set(gca, 'YTick', 0:10:max(num_x));
+    axis equal; % 保证横纵坐标的单位长度相同
 end

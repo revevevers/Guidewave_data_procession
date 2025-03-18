@@ -24,11 +24,11 @@ function check_data(data_xyt, data_time, time)
     n0 = floor(time * (1e-6) * fs);
 
     % 提取单时刻数据
-    wave_field = permute(data_xyt(:,:,n0),[2,1,3]);
+    wave_field = data_xyt(:,:,n0);
 
     % 绘制单时刻图像
     figure;
-    surf(num_x, num_y, wave_field);
+    surf(num_y, num_x, wave_field);
     view([0, 90]);
     shading interp;
     colorbar;

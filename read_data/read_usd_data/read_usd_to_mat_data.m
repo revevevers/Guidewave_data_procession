@@ -13,7 +13,19 @@ function read_usd_to_mat_data(x_mat_file_path, y_mat_file_path, output_mat_file_
     t = size(data_xyt_origin, 2);
     
     % 将数据重塑为三维矩阵，使用列优先顺序
-    data_xyt = reshape(data_xyt_origin', [n, m, t]);
+    % data_xyt = reshape(data_xyt_origin', [n, m, t]);
+
+        % 将数据重塑为三维矩阵，使用“贪吃蛇”顺序
+    for time_index = 1:t
+        displacement = data_xyt_origin(:, time_index);
+        reshaped_data = reshape(displacement, n, m)';% 列有限原则重塑为二维矩阵再转置
+        for row = 1:n
+            if mod(row, 2) == 0
+                reshaped_data(:, row) = fliplr(reshaped_data(:, row));
+            end
+        end
+        data_xyt(:, :, time_index) = reshaped_data; %#ok<AGROW>
+    end
     
     % 保存数据到.mat文件
     save(strcat(output_mat_file_path,'\data.mat'), 'data_xyt', 'data_time');

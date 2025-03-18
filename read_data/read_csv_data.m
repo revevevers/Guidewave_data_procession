@@ -15,15 +15,15 @@ function read_csv_data(csv_file_path, output_mat_file_path, m, n)
     t = length(data_time);
     
     % 初始化三维矩阵
-    data_xyt = zeros(n, m, t);
+    data_xyt = zeros(m, n, t);
     
     % 将数据重塑为三维矩阵，使用“贪吃蛇”顺序
     for time_index = 1:t
         displacement = displacement_data(time_index, :);
-        reshaped_data = reshape(displacement, m, n)';
+        reshaped_data = reshape(displacement, n, m)';% 列有限原则重塑为二维矩阵再转置
         for row = 1:n
             if mod(row, 2) == 0
-                reshaped_data(row, :) = fliplr(reshaped_data(row, :));
+                reshaped_data(:, row) = fliplr(reshaped_data(:, row));
             end
         end
         data_xyt(:, :, time_index) = reshaped_data;
@@ -34,4 +34,4 @@ function read_csv_data(csv_file_path, output_mat_file_path, m, n)
     
     % 打印成功信息
     fprintf('Data successfully saved to %s\n', output_mat_file_path);
-end=
+end
