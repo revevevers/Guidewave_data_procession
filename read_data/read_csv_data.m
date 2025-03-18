@@ -1,4 +1,4 @@
-function read_csv_data(csv_file_path, output_mat_file_path, n, m)
+function read_csv_data(csv_file_path, output_mat_file_path, m, n)
     % 读取CSV文件中的数据
     data = readmatrix(csv_file_path);
     
@@ -22,4 +22,4 @@ function read_csv_data(csv_file_path, output_mat_file_path, n, m)
     
     % 打印成功信息
     fprintf('Data successfully saved to %s\n', output_mat_file_path);
-end
+end=
