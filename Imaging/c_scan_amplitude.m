@@ -1,11 +1,5 @@
-function c_scan_amplitude(data_xyt, fs)
-    [num_y, num_x, ~] = size(data_xyt);
-    
-    % 设置时间窗口（根据实际信号调整）
-    t0 = 85;  % 起始时间（微秒）
-    t1 = 120; % 结束时间（微秒）
-    n0 = floor(t0*(1e-6)*fs);
-    n1 = floor(t1*(1e-6)*fs);
+function c_scan_amplitude(data_xyt)
+    [num_y, num_x, num_t] = size(data_xyt);
     
     % 初始化幅值矩阵
     amplitude_map = zeros(num_y, num_x);
@@ -13,7 +7,7 @@ function c_scan_amplitude(data_xyt, fs)
     % 计算每个点的峰值幅值
     for i = 1:num_y
         for j = 1:num_x
-            signal = squeeze(data_xyt(i, j, n0:n1));
+            signal = squeeze(data_xyt(i, j, :));
             amplitude_map(i, j) = max(abs(signal));
         end
     end
