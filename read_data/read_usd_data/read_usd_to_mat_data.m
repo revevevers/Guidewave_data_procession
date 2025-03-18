@@ -13,6 +13,7 @@ function read_usd_to_mat_data(x_mat_file_path, y_mat_file_path, output_mat_file_
     t = size(data_xyt_origin, 2);
     
     % 将数据重塑为三维矩阵，使用列优先顺序
+<<<<<<< HEAD
     % data_xyt = reshape(data_xyt_origin', [n, m, t]);
 
         % 将数据重塑为三维矩阵，使用“贪吃蛇”顺序
@@ -26,6 +27,9 @@ function read_usd_to_mat_data(x_mat_file_path, y_mat_file_path, output_mat_file_
         end
         data_xyt(:, :, time_index) = reshaped_data; %#ok<AGROW>
     end
+=======
+    data_xyt = reshape(data_xyt_origin', [n, m, t]);
+>>>>>>> 60928989ca2afdc2dfa93ca3183dc1b1470fefb9
     
     % 保存数据到.mat文件
     save(strcat(output_mat_file_path,'\data.mat'), 'data_xyt', 'data_time');
